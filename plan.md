@@ -7,6 +7,7 @@ Regarding the args, you can use the module `argparse` to handle the command-line
 # Input
 
 - d (directory): the directory path provided by the user
+- t (target): the target folder name
 - o (output): the output file path where the list of file paths will be saved, default="./output/output.txt"
 
 # code structure
@@ -22,7 +23,7 @@ def main() -> int:
 absolute file paths of all files in the user-provided directory recursively.
 
 ```text
-/path/to/file1
-/path/to/file2
+/path/to/abc/target_filePath
+/path/to/b/target_filePath
 ...
 ```

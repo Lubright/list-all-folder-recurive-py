@@ -5,13 +5,20 @@ import sys
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Recursively list the absolute paths of all files in a directory."
+        description="Recursively list the absolute paths of all folders named "
+        "<target> under the input directory."
     )
     parser.add_argument(
         "-d",
         "--directory",
         required=True,
-        help="the directory path provided by the user",
+        help="the input directory to search in",
+    )
+    parser.add_argument(
+        "-t",
+        "--target",
+        required=True,
+        help="the target folder name to look for",
     )
     parser.add_argument(
         "-o",
@@ -32,9 +39,12 @@ def main() -> int:
         return 1
 
     file_paths = []
-    for dirpath, _dirnames, filenames in os.walk(root):
-        for filename in filenames:
-            file_paths.append(os.path.join(dirpath, filename))
+    for dirpath, dirnames, _filenames in os.walk(root):
+        for dirname in dirnames:
+            if dirname == args.target:
+                file_paths.append(os.path.join(dirpath, dirname))
+        # Do not descend into matched folders (e.g. nested node_modules).
+        dirnames[:] = [d for d in dirnames if d != args.target]
     file_paths.sort()
 
     output_path = os.path.abspath(args.output)
@@ -44,7 +54,7 @@ def main() -> int:
         if file_paths:
             f.write("\n")
 
-    print(f"Found {len(file_paths)} files. Saved to {output_path}")
+    print(f"Found {len(file_paths)} '{args.target}' folders. Saved to {output_path}")
     return 0
 
 
